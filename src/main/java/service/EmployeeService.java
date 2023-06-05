@@ -6,48 +6,47 @@ import exeptions.EmployeeStorageIsFullException;
 import model.Employee;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeService {
-    private final List<Employee> employees = new ArrayList<>();
     private final int amountOfEmployee = 10;
+    private final Map<String, Employee> employees = new HashMap<>(amountOfEmployee) {
+    };
 
 
-    public Employee add(String name, String lastName) {
-        Employee employeeAdd = new Employee(name, lastName);
+    public Employee add(String firstName, String lastName) {
+        Employee employeeAdd = new Employee(firstName, lastName);
         if (employees.size() > 10) {
             throw new EmployeeStorageIsFullException();
         }
-        if (employees.contains(employeeAdd)) {
+        if (employees.containsKey(createKey(firstName, lastName))) {
             throw new EmployeeAlreadyAddedException();
         }
-        employees.add(employeeAdd);
+        employees.put(createKey(firstName, lastName), employeeAdd);
         return employeeAdd;
     }
 
-    public Employee remove(String name, String lastName) {
-        Employee employeeRemove = new Employee(name, lastName);
-        if (!employees.contains(employeeRemove)) {
+    public Employee remove(String firstName, String lastName) {
+        Employee employeeRemove = new Employee(firstName, lastName);
+        if (!employees.containsKey(createKey(firstName,lastName))) {
             throw new EmployeeNotFoundExeption();
         }
-        employees.remove(employeeRemove);
+        employees.remove(createKey(firstName,lastName));
         return employeeRemove;
     }
 
-    public Employee find(String name, String lastName) {
-        for (Employee employee : employees) {
-            if (name.equals(employee.getName()) && lastName.equals(employee.getLastName())) {
-                return employee;
-            }
+    public Employee find(String firstName, String lastName) {
+        if (!employees.containsKey(createKey(firstName,lastName))) {
+            throw new EmployeeNotFoundExeption();
         }
-        throw new EmployeeNotFoundExeption();
+        return employees.get(createKey(firstName,lastName));
+    }
+    public List<Employee> allEmployee() {
+        return Collections.unmodifiableList(new ArrayList<>(employees.values()));
     }
 
-    public List<Employee> allEmployee() {
-        return Collections.unmodifiableList(employees);
+    public static String createKey(String firstName, String lastName){
+        return firstName + lastName;
     }
 }

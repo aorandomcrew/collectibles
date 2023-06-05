@@ -3,16 +3,16 @@ package model;
 import java.util.Objects;
 
 public class Employee {
-    private String name;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 
     public Employee(String name, String lastName) {
-        this.name = name;
+        this.firstName = name;
         this.lastName = lastName;
     }
 
     public String getName() {
-        return name;
+        return firstName;
     }
 
     public String getLastName() {
@@ -24,16 +24,16 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(name, employee.name) && Objects.equals(lastName, employee.lastName);
+        return Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, lastName);
+        return Objects.hash(firstName, lastName);
     }
 
     @Override
     public String toString() {
-        return "Employee{" + "name='" + name + '\'' + ", lastName='" + lastName + '\'' + '}';
+        return "Employee{" + "name='" + firstName + '\'' + ", lastName='" + lastName + '\'' + '}';
     }
 }
